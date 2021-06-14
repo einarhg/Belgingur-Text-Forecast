@@ -45,7 +45,7 @@ class Template(Enum):
     SNOW_HEAVY = 21
 
 templates =  [["Hiti {min} - {max} gráður.",        "Hæg breytileg átt.",  "{dir} {min} - {max} m/s.", "Heiðskýrt.",   "Hálfskýjað.",  "Alskýjað.", "Í fyrramálið:", "Síðdegis:", "Breytilegir vindar.", "Aðra nótt:",      "Lítilsháttar rigning.", "Skýjað", "Rigning.", "Töluverð rigning.", "Annað kvöld:",   "Logn.", "Lítilsháttar slydda.", "Slydda.", "Töluverð slydda.", "Lítilsháttar snjókoma.", "Snjókoma.", "Töluverð snjókoma."],
-             ["Temperature {min} - {max} degrees.", "Calm winds.",         "{dir} {min} - {max} m/s.", "Clear skies.", "Some clouds.", "Cloudy",    "Morning:", "Afternoon:",     "Changable winds.",    "Tomorrow night:", "Light rain.",           "Cloudy", "Rain",     "Heavy rain",        "Evening:",       "Calm.", "Light sleet.",         "Sleet",   "Heavy sleet",      "Light snow.",            "Snow.",     "Heavy snow."],
+             ["Temperature {min} - {max} degrees.", "Calm winds.",         "{dir} {min} - {max} m/s.", "Clear skies.", "Some clouds.", "Cloudy.",    "Morning:", "Afternoon:",     "Changable winds.",    "Tomorrow night:", "Light rain.",           "Cloudy", "Rain",     "Heavy rain",        "Evening:",       "Calm.", "Light sleet.",         "Sleet",   "Heavy sleet",      "Light snow.",            "Snow.",     "Heavy snow."],
              ["Temperatura {min} - {max} grados.",  "Vientos tranquilos.", "{dir} {min} - {max} m/s.", "",             "",             "",          "",              "",              "",                    "",                ""]]
 
 directions = [["N","NNA","NA","ANA","A","ASA", "SA", "SSA","S","SSV","SV","VSV","V","VNV","NV","NNV"], 
@@ -70,7 +70,7 @@ def get_weather_data():
     times = data["time"]
     data_start = find_starting_point(times)
 
-    # Take only the next day of data and the first 4 hours of the next day
+    # Take only the next day of data and the first 6 hours of the next day
     temp = data["data"]["air_temperature"][data_start:data_start+30]
     wind_dir = data["data"]["wind_from_direction"][data_start:data_start+30]
     wind_sp = data["data"]["wind_speed"][data_start:data_start+30]
