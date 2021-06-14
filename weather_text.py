@@ -31,15 +31,21 @@ class Template(Enum):
     AFTERNOON = 7
     WIND_VARIABLE = 8
     NIGHT = 9
-    RAIN_LITTLE = 10
+    RAIN_LIGHT = 10
     CLOUDS_CLOUDY = 11
     RAIN_MODERATE = 12
     RAIN_HEAVY = 13
     EVENING = 14
     WIND_NONE = 15
+    SLEET_LIGHT = 16
+    SLEET_MODERATE = 17
+    SLEET_HEAVY = 18
+    SNOW_LIGHT = 19
+    SNOW_MODERATE = 20
+    SNOW_HEAVY = 21
 
-templates =  [["Hiti {min} - {max} gráður.",        "Hæg breytileg átt.",  "{dir} {min} - {max} m/s.", "Heiðskýrt.",   "Hálfskýjað.",  "Alskýjað.", "Morgunn:", "Seinni partur:", "Breytilegir vindar.", "Aðra nótt:",      "Lítilsháttar rigning.", "Skýjað", "Rigning.", "Töluverð rigning.", "Kvöld:",   "Logn."],
-             ["Temperature {min} - {max} degrees.", "Calm winds.",         "{dir} {min} - {max} m/s.", "Clear skies.", "Some clouds.", "Cloudy",    "Morning:", "Afternoon:",     "Changable winds.",    "Tomorrow night:", "Light rain.",           "Cloudy", "Rain",     "Heavy rain",        "Evening:", "Calm."],
+templates =  [["Hiti {min} - {max} gráður.",        "Hæg breytileg átt.",  "{dir} {min} - {max} m/s.", "Heiðskýrt.",   "Hálfskýjað.",  "Alskýjað.", "Í fyrramálið:", "Síðdegis:", "Breytilegir vindar.", "Aðra nótt:",      "Lítilsháttar rigning.", "Skýjað", "Rigning.", "Töluverð rigning.", "Annað kvöld:",   "Logn.", "Lítilsháttar slydda.", "Slydda.", "Töluverð slydda.", "Lítilsháttar snjókoma.", "Snjókoma.", "Töluverð snjókoma."],
+             ["Temperature {min} - {max} degrees.", "Calm winds.",         "{dir} {min} - {max} m/s.", "Clear skies.", "Some clouds.", "Cloudy",    "Morning:", "Afternoon:",     "Changable winds.",    "Tomorrow night:", "Light rain.",           "Cloudy", "Rain",     "Heavy rain",        "Evening:",       "Calm.", "Light sleet.",         "Sleet",   "Heavy sleet",      "Light snow.",            "Snow.",     "Heavy snow."],
              ["Temperatura {min} - {max} grados.",  "Vientos tranquilos.", "{dir} {min} - {max} m/s.", "",             "",             "",          "",              "",              "",                    "",                ""]]
 
 directions = [["N","NNA","NA","ANA","A","ASA", "SA", "SSA","S","SSV","SV","VSV","V","VNV","NV","NNV"], 
@@ -134,13 +140,31 @@ def gen_wind(wind_dir, wind_sp):
     return Template.WIND_VARIABLE.value, 0, 0, 0
     
 
-def gen_clouds(clouds, rain):
-    if mean(rain) < 0.2 and mean(rain) > 0:
-        return Template.RAIN_LITTLE.value
-    elif mean(rain) < 1 and mean(rain) > 0:
-        return Template.RAIN_MODERATE.value
-    elif mean(rain) > 0:
-        return Template.RAIN_HEAVY.value
+def gen_clouds_percip(clouds, rain, temp):
+    avg_temp = mean(temp)
+    avg_rain = mean(rain)
+
+    if avg_rain < 0.2 and avg_rain > 0:
+        if avg_temp > 2:
+            return Template.RAIN_LIGHT.value
+        elif avg_temp >= 1: 
+            return Template.SLEET_LIGHT.value
+        else:
+            return Template.SNOW_LIGHT.value
+    elif avg_rain < 1 and avg_rain > 0:
+        if avg_temp > 2:
+            return Template.RAIN_MODERATE.value
+        elif avg_temp >= 1: 
+            return Template.SLEET_MODERATE.value
+        else:
+            return Template.SNOW_MODERATE.value
+    elif avg_rain > 0:
+        if avg_temp > 2:
+            return Template.RAIN_HEAVY.value
+        elif avg_temp >= 1: 
+            return Template.SLEET_HEAVY.value
+        else:
+            return Template.SNOW_HEAVY.value
 
     if mean(clouds) < 0.25:
         return Template.CLOUDS_CLEAR.value
@@ -161,7 +185,7 @@ def gen_time_interval(temp, wind_dir, wind_sp, clouds, rain):
     forecast += " "
 
     # Clouds/precipitation
-    cloud_template = gen_clouds(clouds, rain)
+    cloud_template = gen_clouds_percip(clouds, rain, temp)
     forecast += templates[lang][cloud_template]
     forecast += " "
 
