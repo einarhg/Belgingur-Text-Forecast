@@ -1,8 +1,7 @@
 import json
 import requests
-from requests.auth import HTTPBasicAuth
-from enum import Enum, auto
-from statistics import median, mean
+from enum import Enum
+from statistics import mean
 import sys
 import math
 import datetime
@@ -58,7 +57,6 @@ def find_starting_point(times):
 
 
 def get_weather_data():
-    
     response = requests.get(request_path.format(latlon=coords, data_params=data_params), auth=(user, password))
     data = json.loads(response.text)
 
